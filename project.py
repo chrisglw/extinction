@@ -125,6 +125,26 @@ def view_sales():
     else:
         print("No sales recorded yet.")
 
+def delete_product():
+    while True:
+        list_products()
+        product_id = input('Enter the product ID to delete (or press "q" to quit): ')
+        if product_id.lower() == 'q':
+            break
+        
+        product_ref = ref.child("products").child(product_id)
+        product_data = product_ref.get()
+        
+        if product_data:
+            product_name = product_data.get('name', 'N/A')
+            confirmation = input(f"Are you sure you want to delete '{product_name}'? (yes/no): ")
+            if confirmation.lower() == 'yes':
+                product_ref.delete()
+                print(f"'{product_name}' has been deleted.")
+            else:
+                print(f"'{product_name}' was not deleted.")
+        else:
+            print("Product not found.")
 
 while True:
     print("\nWelcome to Extinction App")
@@ -133,7 +153,8 @@ while True:
     print("3. Update Stock")
     print("4. Record Sale")
     print("5. View Sales")
-    print("6. Exit")
+    print("6. Delete Product")
+    print("7. Exit")
 
     choice = input("Enter your choice: ")
 
@@ -153,8 +174,11 @@ while True:
         view_sales()
 
     elif choice == "6":
+        delete_product()
+
+    elif choice == "7":
         print("Exiting program.")
         break
 
     else:
-        print("Invalid choice. Please try again.") 
+        print("Invalid choice. Please try again.")
