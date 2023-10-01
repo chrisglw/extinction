@@ -189,6 +189,13 @@ def delete_product():
         else:
             print("Product not found.")
 
+def loading_animation():
+    animation = "|/-\\"
+    for _ in range(5): 
+        for char in animation:
+            print(f"{char}", end="\r")
+            time.sleep(0.1)
+
 # Function to read user credentials from a file
 def read_credentials(filename):
     credentials = {}
@@ -215,17 +222,19 @@ max_attempts = 3
 
 while max_attempts > 0:
     os.system("clear")
-    print("\nWelcome to Extinction App")
+    print("Welcome to Extinction App")
     print(f"Enter your username and password to access the program.")
 
     username = input("Username: ")
     password = getpass.getpass("Password: ")
 
     if check_credentials(user_credentials, username, password):
-        print(f"Welcome, {username}!")
+        loading_animation()
+        print(f"Welcome to Extinction App, {username.capitalize()}!")
+        loading_animation()
+        
         while True:
             os.system("clear")
-            print("\nWelcome to Extinction App")
             print("1. Add Product")
             print("2. List Products")
             print("3. Update Stock")
