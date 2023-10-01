@@ -2,6 +2,8 @@ from firebase_admin import initialize_app, credentials, db
 import os
 import datetime
 import time
+import getpass
+
 
 # Initialize Firebase Admin with your private key
 cred = credentials.Certificate("extinction-credentials.json")
@@ -20,7 +22,7 @@ def add_product():
         product_id = input("Enter product ID (or 'q' to quit): ")
         if product_id.lower() == 'q':
             break
-        
+
         name = input("Enter product name: ")
         color = input("Enter product color: ")
         price = float(input("Enter product price: ")) 
@@ -187,33 +189,72 @@ def delete_product():
         else:
             print("Product not found.")
 
-while True:
-    clear()
+# Function to read user credentials from a file
+def read_credentials(filename):
+    credentials = {}
+    with open(filename, 'r') as file:
+        for line in file:
+            username, password = line.strip().split(':')
+            credentials[username] = password
+    return credentials
+
+# Function to check user credentials
+def check_credentials(credentials, username, password):
+    if username in credentials and credentials[username] == password:
+        return True
+    return False
+
+# Define the filename for storing user credentials
+credentials_file = 'credentials.txt'
+
+# Read user credentials from the file
+user_credentials = read_credentials(credentials_file)
+
+# attempts
+max_attempts = 3
+
+while max_attempts > 0:
+    os.system("clear")
     print("\nWelcome to Extinction App")
-    print("1. Add Product")
-    print("2. List Products")
-    print("3. Update Stock")
-    print("4. Record Sale")
-    print("5. View Sales")
-    print("6. Delete Product")
-    print("7. Exit")
+    print(f"Enter your username and password to access the program.")
 
-    choice = input("Enter your choice: ")
+    username = input("Username: ")
+    password = getpass.getpass("Password: ")
 
-    if choice == "1":
-        add_product()
-    elif choice == "2":
-        list_products()
-    elif choice == "3":
-        update_stock()
-    elif choice == "4":
-        record_sale()
-    elif choice == "5":
-        view_sales()
-    elif choice == "6":
-        delete_product()
-    elif choice == "7":
-        print("Exiting program.")
-        break
+    if check_credentials(user_credentials, username, password):
+        print(f"Welcome, {username}!")
+        while True:
+            os.system("clear")
+            print("\nWelcome to Extinction App")
+            print("1. Add Product")
+            print("2. List Products")
+            print("3. Update Stock")
+            print("4. Record Sale")
+            print("5. View Sales")
+            print("6. Delete Product")
+            print("7. Exit")
+
+            choice = input("Enter your choice: ")
+
+            if choice == "1":
+                add_product()
+            elif choice == "2":
+                list_products()
+            elif choice == "3":
+                update_stock()
+            elif choice == "4":
+                record_sale()
+            elif choice == "5":
+                view_sales()
+            elif choice == "6":
+                delete_product()
+            elif choice == "7":
+                print("Exiting program.")
+                exit()
+            else:
+                print("Invalid choice. Please try again.")
     else:
-        print("Invalid choice. Please try again.")
+        print("Invalid username or password. Access denied.")
+        max_attempts -= 1
+
+print("Maximum login attempts reached. Exiting program.")
